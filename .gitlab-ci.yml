@@ -1,0 +1,14 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: DOCKER_IMAGE_REGISTRY/infra-tools/devops-cli:0.1
+  variables:
+    DOCKER_HOST: tcp://docker-dind:2375
+  tags:
+    - k8s-runner
+  script:
+    - docker build -t DOCKER_IMAGE_REGISTRY/infra-tools/container-admission-webhook:$CI_COMMIT_SHORT_SHA -f Dockerfile .
+    - docker push DOCKER_IMAGE_REGISTRY/infra-tools/container-admission-webhook:$CI_COMMIT_SHORT_SHA
